@@ -5,8 +5,8 @@
 
 (def base "org.apache.logging.log4j.core")
 (def JndiLookup (str base ".lookup.JndiLookup"))
-(def AbstractLookup (str base "lookup.AbstractLookup"))
-(def LogEvent (str base "LogEvent"))
+(def AbstractLookup (str base ".lookup.AbstractLookup"))
+(def LogEvent (str base ".LogEvent"))
 
 (def zero-vulns-bytecode
   (-> {:name JndiLookup
