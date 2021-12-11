@@ -1,7 +1,12 @@
 (ns com.latacora.just-never-do-it
   (:require [insn.core :as insn] [clojure.string :as str])
-  (:import (java.lang.instrument ClassFileTransformer UnmodifiableClassException))
-  (:gen-class))
+  (:import
+   (java.lang.instrument
+    Instrumentation ClassFileTransformer UnmodifiableClassException))
+  (:gen-class
+   :methods
+   [[agentmain [String Instrumentation] void]
+    [premain [String Instrumentation] void]]))
 
 (def base "org.apache.logging.log4j.core")
 (def JndiLookup (str base ".lookup.JndiLookup"))
@@ -25,12 +30,13 @@
       (transform [_ _ cls-name _ _ _] (replace cls-name)))))
 
 (defn -premain
-  [_ inst]
+  [^String _ ^Instrumentation inst]
+  (println "adding just-never-do-it transformer")
   (.addTransformer inst transformer true))
 
 (defn -agentmain
-  [_ inst]
-  (.addTransformer inst transformer true)
+  [^String _ ^Instrumentation inst]
+  (-premain nil inst)
   (loop [[c & cs] (.getAllLoadedClasses inst)]
     (if (= (.getName c) JndiLookup)
       (try
