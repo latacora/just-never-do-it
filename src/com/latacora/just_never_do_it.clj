@@ -25,10 +25,10 @@
         xf (reify ClassFileTransformer
              (transform [_ _ cls-name _ _ _] (replace cls-name)))]
     (.addTransformer inst xf true)
-    (doseq [c (.getAllLoadedClasses inst)
-            :when (= (.getName c) JndiLookup)]
-      (try
-        (.retransformClasses inst c)
-        (catch UnmodifiableClassException e
-          (println e))))
+    (loop [[c & cs] (.getAllLoadedClasses inst)]
+      (if (= (.getName c) JndiLookup)
+        (try
+          (.retransformClasses inst c)
+          (catch UnmodifiableClassException e (println e)))
+        (recur cs)))
     (.removeTransformer xf)))
