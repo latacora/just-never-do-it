@@ -15,7 +15,7 @@
 (defn jar [_]
   (clean nil)
   (b/compile-clj {:basis basis :src-dirs ["src"] :class-dir class-dir})
-  (let [agent-class (-> lib name (str/replace "/" ".") (str/replace "-" "_"))]
+  (let [agent-class (-> lib str (str/replace "/" ".") (str/replace "-" "_"))]
     (b/jar
      {:class-dir class-dir
       :jar-file jar-file
