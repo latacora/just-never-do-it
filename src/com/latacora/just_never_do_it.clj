@@ -19,15 +19,20 @@
       insn/visit
       :bytes))
 
+(def transformer
+  (let [replace {(str/replace JndiLookup "." "/") zero-vulns-bytecode}]
+    (transform [_ _ cls-name _ _ _] (replace cls-name))))
+
+(defn -premain
+  [_ inst]
+  (.addTransformer inst xf true))
+
 (defn -agentmain
   [_ inst]
-  (let [replace {(str/replace JndiLookup "." "/") zero-vulns-bytecode}
-        xf (reify ClassFileTransformer
-             (transform [_ _ cls-name _ _ _] (replace cls-name)))]
-    (.addTransformer inst xf true)
-    (loop [[c & cs] (.getAllLoadedClasses inst)]
-      (if (= (.getName c) JndiLookup)
-        (try
-          (.retransformClasses inst c)
-          (catch UnmodifiableClassException e (println e)))
-        (recur cs)))))
+  (.addTransformer inst xf true)
+  (loop [[c & cs] (.getAllLoadedClasses inst)]
+    (if (= (.getName c) JndiLookup)
+      (try
+        (.retransformClasses inst c)
+        (catch UnmodifiableClassException e (println e)))
+      (recur cs))))
