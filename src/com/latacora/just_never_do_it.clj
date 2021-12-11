@@ -21,15 +21,16 @@
 
 (def transformer
   (let [replace {(str/replace JndiLookup "." "/") zero-vulns-bytecode}]
-    (transform [_ _ cls-name _ _ _] (replace cls-name))))
+    (reify ClassFileTransformer
+      (transform [_ _ cls-name _ _ _] (replace cls-name)))))
 
 (defn -premain
   [_ inst]
-  (.addTransformer inst xf true))
+  (.addTransformer inst transformer true))
 
 (defn -agentmain
   [_ inst]
-  (.addTransformer inst xf true)
+  (.addTransformer inst transformer true)
   (loop [[c & cs] (.getAllLoadedClasses inst)]
     (if (= (.getName c) JndiLookup)
       (try
