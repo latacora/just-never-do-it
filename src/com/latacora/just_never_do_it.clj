@@ -30,5 +30,4 @@
         (try
           (.retransformClasses inst c)
           (catch UnmodifiableClassException e (println e)))
-        (recur cs)))
-    (.removeTransformer xf)))
+        (recur cs)))))
