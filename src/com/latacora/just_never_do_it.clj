@@ -5,8 +5,8 @@
     Instrumentation ClassFileTransformer UnmodifiableClassException))
   (:gen-class
    :methods
-   [[agentmain [String Instrumentation] void]
-    [premain [String Instrumentation] void]]))
+   [^:static [agentmain [String java.lang.instrument.Instrumentation] void]
+    ^:static [premain [String java.lang.instrument.Instrumentation] void]]))
 
 (def base "org.apache.logging.log4j.core")
 (def JndiLookup (str base ".lookup.JndiLookup"))
@@ -30,12 +30,12 @@
       (transform [_ _ cls-name _ _ _] (replace cls-name)))))
 
 (defn -premain
-  [^String _ ^Instrumentation inst]
+  [^String args ^Instrumentation inst]
   (println "adding just-never-do-it transformer")
   (.addTransformer inst transformer true))
 
 (defn -agentmain
-  [^String _ ^Instrumentation inst]
+  [^String args ^Instrumentation inst]
   (-premain nil inst)
   (loop [[c & cs] (.getAllLoadedClasses inst)]
     (if (= (.getName c) JndiLookup)
