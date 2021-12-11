@@ -1,0 +1,10 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        insn/insn {:mvn/version "0.5.2"}}
+ :aliases
+ {:gief-internalz
+  {:jvm-opts ["--add-exports" "java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED"]}
+
+  :build
+  {:deps {io.github.clojure/tools.build {:sha "5a9788961af861bb06bd5aed82194e5d7d66018d"}}
+   :ns-default build}}}
