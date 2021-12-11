@@ -20,6 +20,7 @@
      {:class-dir class-dir
       :jar-file jar-file
       :basis basis
-      :manifest {"Agent-Class" agent-class
+      :manifest {"Premain-Class" agent-class
+                 "Agent-Class" agent-class
                  "Can-Redefine-Classes" "true"
                  "Can-Retransform-Classes" "true"}})))
